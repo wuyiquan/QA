@@ -1,0 +1,6 @@
+用户上传的文件要分类到名为upload_segment_data_k的文件夹中，且要记录一共上传了几次文件
+对于用户上传的.txt文档，要求在文件的第一行写上with/without similarity question，第二行写上with/without category name，从而在下面对于用户上传的文件进行分类的程序中进行判断
+
+主算法：get_question_return_answer.py 得最相似的问题
+get_question_embedding.py 把用户所问的问题转化为平均向量，跟已有数据中的问题的平均向量求余弦距离，
+get_bm25_score.py 求用户所问问题和已有数据中的问题求相似度
