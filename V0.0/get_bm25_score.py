@@ -70,7 +70,7 @@ def score_calu_BM25(avg_answer_length,answer_temp_length,answer_word_num_dict,qu
 def get_bm25(category,file_path,disease_dict,user_question):
     #获取用户输入的user_question与对应疾病类中的所有疾病问题的BM25分数
     #首先获取输入的用户问句的分词
-    catalog_file_path = '/usr/mlt/dingxiangyuan/dingxiangyuan_data/dingxiangyuan_segment_new/userdict_jieba_test.txt'
+    catalog_file_path = './userdict_jieba_test.txt'
     sentence_words_list = get_segement_words(catalog_file_path,user_question)
     if sentence_words_list[0] == 'Error':
         print ('所输入的问题无法分析')

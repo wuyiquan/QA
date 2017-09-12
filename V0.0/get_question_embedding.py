@@ -54,8 +54,11 @@ def get_mean_vector(question_line_list,model):
             question_word_num = question_word_num + 1
             question_vector = question_vector + word_vector
         except KeyError:
-            continue
+            print "KeyError"
+    print question_word_num
     question_mean_vector = (question_vector/question_word_num).tolist()
+    #for vectors in question_mean_vector:
+    #    print vectors
     return question_mean_vector
     
 def calu_cosine_distance(question_vector,answer_temp_vector):
@@ -70,7 +73,7 @@ def get_embedding(category,file_path,disease_dict,model,user_question):
     disease_dir_question_num = int(disease_dict[category][1])
     #下面加上对于用户提出的问题的分词及求输入问题及对应类别内所有问题的平均embedding及相互余弦距离
     #求用户提出的问题的embedding
-    catalog_file_path = '/usr/mlt/dingxiangyuan/dingxiangyuan_data/dingxiangyuan_segment_new/userdict_jieba_test.txt'
+    catalog_file_path = './userdict_jieba_test.txt'
     sentence_words_list = get_segement_words(catalog_file_path,user_question)
     if sentence_words_list[0] == 'Error':
         print ('所输入的问题无法分析')
@@ -82,6 +85,8 @@ def get_embedding(category,file_path,disease_dict,model,user_question):
         question_file_temp_path = os.path.join(file_path,str(disease_dir_index),str(question_file_index) + '_q.txt')
         question_temp_line = open(question_file_temp_path,'rb').readline()
         question_temp_list = question_temp_line.strip().split('\t')
+        for word in question_temp_list:
+            print word
         question_temp_embedding = get_mean_vector(question_temp_list,model)
         cosine_similarity_user_question_question_temp = calu_cosine_distance(user_question_mean_embedding,question_temp_embedding)
         cosine_similarity_list.append(cosine_similarity_user_question_question_temp)

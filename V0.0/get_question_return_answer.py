@@ -34,11 +34,11 @@ def judge_user_question(user_question,disease_dict,embedding_category,file_path_
     return same_question_flag
 
 def main():
-    #user_question = raw_input('输入所问问题 ： ')
-    user_question = sys.argv[1]
-    #print user_question
-    file_path = './'
-    file_path_1 = './'
+    user_question = raw_input('输入所问问题 ： ')
+    #user_question = sys.argv[1]
+    print user_question
+    file_path = './data/data'
+    file_path_1 = './data/data'
     gensim_model = './word2vec.model'
     catalog_path = os.path.join(file_path_1,'catalog.txt')
     embedding_category,embedding_similarity = get_question_embedding.get_embedding_main(file_path,user_question,gensim_model)
@@ -62,7 +62,7 @@ def main():
                 sys.exit(0)
         question_index = similarity_array.tolist().index(np.max(similarity_array))
         category_index = disease_dict[embedding_category][0]
-        answer_file_path = os.path.join('/usr/mlt/user_upload_test/user_upload_test_data/mix_result_data/',str(category_index),str(question_index+1)+'_a.txt')
+        answer_file_path = os.path.join('./data/data/',str(category_index),str(question_index+1)+'_a.txt')
         line = open(answer_file_path,'rb').readline()
         print line
         sys.exit(0)
