@@ -37,8 +37,8 @@ def main():
     user_question = raw_input('输入所问问题 ： ')
     #user_question = sys.argv[1]
     print user_question
-    file_path = './data/data'
     file_path_1 = './data/data'
+    file_path = './data/data_segmentation'
     gensim_model = './word2vec.model'
     catalog_path = os.path.join(file_path_1,'catalog.txt')
     embedding_category,embedding_similarity = get_question_embedding.get_embedding_main(file_path,user_question,gensim_model)
