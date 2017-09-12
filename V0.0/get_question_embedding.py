@@ -50,6 +50,7 @@ def get_mean_vector(question_line_list,model):
     question_word_num = 0
     for word in question_line_list:
         word = word.decode('utf-8')
+        print word
         try:
             word_vector = get_vector(word,model)
             question_word_num = question_word_num + 1
@@ -79,7 +80,14 @@ def get_embedding(category,file_path,disease_dict,model,user_question):
     if sentence_words_list[0] == 'Error':
         print ('所输入的问题无法分析')
         return []
-    user_question_mean_embedding = get_mean_vector(sentence_words_list,model)
+    print 'category:' + category
+    if category.find(str(user_question)) >= 0:
+        print 'find'
+        sentence_word_list = []
+        sentence_word_list.append(category)
+        user_question_mean_embedding = get_mean_vector(sentence_word_list,model)
+    else:
+        user_question_mean_embedding = get_mean_vector(sentence_words_list,model) 
     cosine_similarity_list = []
     for question_index in range(disease_dir_question_num):
         question_file_index = question_index + 1
@@ -87,7 +95,7 @@ def get_embedding(category,file_path,disease_dict,model,user_question):
         question_temp_line = open(question_file_temp_path,'rb').readline()
         question_temp_list = question_temp_line.strip().split('\t')
         #for word in question_temp_list:
-            #print word
+        #    print word
         question_temp_embedding = get_mean_vector(question_temp_list,model)
         cosine_similarity_user_question_question_temp = calu_cosine_distance(user_question_mean_embedding,question_temp_embedding)
         cosine_similarity_list.append(cosine_similarity_user_question_question_temp)

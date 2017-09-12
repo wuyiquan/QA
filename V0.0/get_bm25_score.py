@@ -77,6 +77,9 @@ def get_bm25(category,file_path,disease_dict,user_question):
     if sentence_words_list[0] == 'Error':
         print ('所输入的问题无法分析')
         return []
+    if category.find(str(user_question)) >= 0:
+        sentence_words_list = []
+        sentence_words_list.append(category)
     #需要获取所有该疾病下面的所有问题的单词出现的次数（即对于该疾病类型下面的所有问题，其中各个词会在多少个问题中出现），所有问题的长度，
     #用户提出的各个词分别在该疾病类型下的每个问题中的出现次数
     question_word_num_dict = {} #存储该疾病类型下的所有问题中的各个词分别在多少个问题中出现（每个问题中某个词出现，则只计一次）
