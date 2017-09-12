@@ -30,12 +30,13 @@ def get_disease_dict(catalog_path):
         disease_list.append(disease_name)
     return disease_dict,disease_list
 
-def get_category(user_question,disease_list):
+def get_category(sentence_words_list,disease_list):
     for item in disease_list:
-        if user_question.find(str(item)) >= 0:
-            return item
-        else:
-            continue
+        for word in sentence_words_list:
+            if item.find(str(word)) >= 0:
+                return item
+            else:
+                continue 
     return 'other'
     
 def get_vector(word,model):
@@ -99,7 +100,10 @@ def get_embedding_main(file_path,user_question,gensim_model):
     disease_dict,disease_list = get_disease_dict(catalog_path)
     #gensim_model = sys.argv[2]
     model = gensim.models.Word2Vec.load(gensim_model)
-    category = get_category(str(user_question),disease_list)
+    catalog_file_path = './userdict_jieba_test.txt'
+    sentence_words_list = get_segement_words(catalog_file_path,user_question)
+    #category = get_category(str(user_question),disease_list)
+    category = get_category(sentence_words_list,disease_list)
     if category == 'other':
         #print '找不到所找疾病信息'
         return category,[]
