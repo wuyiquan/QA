@@ -1,0 +1,9 @@
+1、执行word_segment.py 来对于用户上传的txt来处理成郭兆宇的病的分类格式
+2、执行get_segment_word_dir.py来生成存储问题分词的文件的全部文件夹
+3、执行word_segmentation.py生成所有疾病的所有问题的分词文件及用来进行word2vec训练的文件
+4、执行命令来转换word2vec训练所用文件为UTF-8格式的所用文件
+5、执行train_word2vec_model.py来训练word2vec模型
+   python train_word2vec_model.py wiki.zh.text.jian.seg.utf-8 wiki.zh.text.model wiki.zh.text.vector
+   http://www.52nlp.cn/%E4%B8%AD%E8%8B%B1%E6%96%87%E7%BB%B4%E5%9F%BA%E7%99%BE%E7%A7%91%E8%AF%AD%E6%96%99%E4%B8%8A%E7%9A%84word2vec%E5%AE%9E%E9%AA%8C/comment-page-1
+6、执行get_word_vector.py来测试word2vec是否已经训练好了
+7、执行get_question_return_answer.py 及 所问问题返回答案

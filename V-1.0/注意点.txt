@@ -1,0 +1,3 @@
+用户上传的文件要分类到名为upload_segment_data_k的文件夹中，且要记录一共上传了几次文件
+对于用户上传的.txt文档，要求在文件的第一行写上with/without similarity question，第二行写上with/without category name，从而在下面对于用户上传的文件进行分类的程序中进行判断
+ 
