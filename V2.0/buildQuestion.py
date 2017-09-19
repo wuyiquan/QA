@@ -1,3 +1,4 @@
+# -*-coding: utf-8 -*-
 def books(Name, aspect):
     return "有什么与" + Name + "相关的记载吗"
 

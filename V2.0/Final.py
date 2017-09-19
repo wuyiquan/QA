@@ -1,25 +1,30 @@
+# -*-coding: utf-8 -*-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import os
 import gensim
 import jieba
 import numpy as np
 import re
 import buildQuestion
+import io
 
 
 class medicalQA:
     def __init__(self, gensim_model_path, jieba_dict_path):
         self.name_list = []
         self.name_dict = {}
-        for line in open(jieba_dict_path, encoding="utf-8").readlines():
+        for line in io.open(jieba_dict_path, encoding="utf-8").readlines():
             self.name_list.append(line.split()[0])  # 读入疾病
         #for name in self.name_list:
         #    print(name)
-        dirNames = ["content1",
-                    "content2",
-                    "content3",
-                    "content4", ]
+        dirNames = ["./data/content1",
+                    "./data/content2",
+                    "./data/content3",
+                    "./data/content4", ]
         for dirName in dirNames:  # 构建每个疾病对应的路径的字典
-            with open(os.path.join(dirName, "index.txt"), encoding="utf-8") as f:
+            with io.open(os.path.join(dirName, "index.txt"), encoding="utf-8") as f:
                 cnt = 1
                 for line in f.readlines():
                     self.name_dict[line.split()[1].strip("\n")] = os.path.join(dirName, str(cnt))
@@ -66,7 +71,8 @@ class medicalQA:
             now = s & now
             if len(now) < 3:
                 break
-            print(now)
+            #for name in now:
+            #    print name
         self.related_name_list = list(now)
         if len(self.related_name_list) > 0:
             return
@@ -84,15 +90,18 @@ class medicalQA:
                     self.related_name_list.append(name) # 与问题相关的疾病list
                     break
         if len(self.related_name_list) == 0:
-            print('找不到疾病信息')
+            print '找不到疾病信息'
         else:
-            print('定位疾病: ', self.related_name_list)
+            print '定位疾病: ' 
+            for name in self.related_name_list:
+                print name
 
     def __question2segmentation(self, question):
         question_words = []
         for word in jieba.cut(question, cut_all=False):
             question_words.append(word)
-        print(question_words)
+#        for word in question_words:
+#            print word
         return question_words
 
     def __findSimilarity(self, question):
@@ -104,8 +113,8 @@ class medicalQA:
         return dot / (float(user_question_embedding_length) * float(question_embedding_length))
 
     def readInput(self):
-        self.user_question = input()
-        marks = open("mark.txt", encoding="utf-8").read()
+        self.user_question = raw_input('输入所问问题 ： ')
+        marks = io.open("./mark.txt", encoding="utf-8").read()
         for mark in marks:
             self.user_question = self.user_question.replace(mark, "")
         self.user_question_words = self.__question2segmentation(self.user_question)
@@ -124,7 +133,7 @@ class medicalQA:
             cosine_similarity_list = []  # 这个疾病所有问题的相似度list
             path_list = []  # 这个疾病的的对应问题的路径list
             questions_list = []  # 这个疾病的问题list
-            print("path", self.name_dict[name])
+#            print "path" + self.name_dict[name]
             for index in os.listdir(self.name_dict[name]):
                 if index == "目录.txt":
                     continue
@@ -150,14 +159,14 @@ class medicalQA:
             #rate *= 0.5
             answer_index = np.argmax(np.array(cosine_similarity_list))  # 取出相似度最高的词条的下标
             best_question_list.append(questions_list[answer_index])  # 加入这个词条的对应问题
-            best_answer_list.append(open(path_list[answer_index], encoding='utf-8').read()) # 加入这个问题的答案
+            best_answer_list.append(io.open(path_list[answer_index], encoding='utf-8').read()) # 加入这个问题的答案
 
-        print("--------------------------------------")
+        print "--------------------------------------"
         best_index = np.argmax(np.array(best_similarity_list))  # 输出所有疾病中最契合的问题的下标
-        print(best_question_list[best_index])  # 输入问题
-        print(best_answer_list[best_index])  # 输出答案
+        print best_question_list[best_index]  # 输入问题
+        print best_answer_list[best_index]  # 输出答案
 
-QA = medicalQA("word2vec3.model", "new_dict2.txt")
+QA = medicalQA("./word2vec3.model", "./new_dict2.txt")
 while True:
     QA.readInput()
     QA.showAnswer()
