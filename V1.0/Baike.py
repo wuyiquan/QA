@@ -1,23 +1,26 @@
+# -*-coding: utf-8 -*-
 import sys
-import Word2Vec
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import os
 import gensim
 import jieba
 import numpy as np
 import re
 import buildQuestion
+import io
 
 def prepare(gensim_model, jieba_dict_path):
     name_list = []
     name_dict = {}
-    for line in open("new_dict2.txt", encoding="utf-8").readlines():
+    for line in io.open("new_dict2.txt", encoding="utf-8").readlines():
         name_list.append(line.strip("\n").strip("\ufeff")) #读入疾病
-    dirNames = ["content1",
-                "content2",
-                "content3",
-                "content4", ]
+    dirNames = ["./data/content1",
+                "./data/content2",
+                "./data/content3",
+                "./data/content4", ]
     for dirName in dirNames: #构建每个疾病对应的路径的字典
-        with open(os.path.join(dirName, "index.txt"), encoding="utf-8") as f:
+        with io.open(os.path.join(dirName, "index.txt"), encoding="utf-8") as f:
             cnt = 1
             for line in f.readlines():
                 name_dict[line.split()[1].strip("\n")] = os.path.join(dirName, str(cnt))
@@ -55,10 +58,12 @@ def question2embedding(question, word2vec_model, diseases_catalog, isUser=True):
                     diseases.append(disease_name) # 与问题相关的疾病list
                     break
         if len(diseases) == 0:
-            print('找不到疾病信息')
+            print '找不到疾病信息'
             return None, diseases
         else:
-            print('定位疾病: ', diseases)
+            print '定位疾病: '
+            for disease in diseases:
+                print disease
     #转为向量
     question_vector = find_question_vector(question=question_words2, word2vec_model=word2vec_model)
     return question_vector, diseases
@@ -71,7 +76,7 @@ def cosine_distance(vector1, vector2):
     return dot / (float(vector1_length) * float(vector2_length))
 
 def input_handle(user_question): #对user的问题进行处理
-    marks = open("mark.txt", encoding="utf-8").read()
+    marks = io.open("mark.txt", encoding="utf-8").read()
     for mark in marks:
         user_question = user_question.replace(mark, "")
     return user_question
@@ -105,10 +110,10 @@ def find_answer4user_question(user_question_vector, related_diseases, diseases_c
         rate *= 0.80# rate是一个衰弱系数
         answer_index = np.argmax(np.array(cosine_similarity_list)) #取出相似度最高的问题的下标
         best_question_list.append(question_list[answer_index])# 加入这个问题
-        best_answer_list.append(open(path_list[answer_index], encoding='utf-8').read()) # 加入这个问题的答案
+        best_answer_list.append(io.open(path_list[answer_index], encoding='utf-8').read()) # 加入这个问题的答案
 
         #print(question_list[answer_index])
-        #print(open(path_list[answer_index], encoding='utf-8').read())
+        #print(io.open(path_list[answer_index], encoding='utf-8').read())
     print("--------------------------------------")
     best_index = np.argmax(np.array(best_similarity)) #输出所有疾病中最契合的问题的下标
     print(best_question_list[best_index]) #输入问题
@@ -116,14 +121,14 @@ def find_answer4user_question(user_question_vector, related_diseases, diseases_c
 
 
 if __name__ == '__main__':
-    gensim_model = "word2vec3.model" #使用的向量model
-    jieba_dict_path = "new_dict2.txt" #jieba的词典
+    gensim_model = "./word2vec3.model" #使用的向量model
+    jieba_dict_path = "./new_dict2.txt" #jieba的词典
     diseases_catalog, model = prepare(gensim_model=gensim_model,
                              jieba_dict_path=jieba_dict_path) #数据准备
     while True:
-        user_question = input()
+        user_question = raw_input('输入所问问题 ： ')
         user_question = input_handle(user_question)
-        print(user_question)
+        #print(user_question)
         user_question_vector, related_diseases = question2embedding(user_question, model, diseases_catalog)
         #返回问题向量与相关的疾病
         if user_question_vector is None: #无法分析问题
